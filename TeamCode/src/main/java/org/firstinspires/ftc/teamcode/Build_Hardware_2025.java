@@ -306,7 +306,4 @@ public class Build_Hardware_2025 {
         return hardwareMap.voltageSensor.iterator().next().getVoltage();
     }
 
-
-
-
 }
