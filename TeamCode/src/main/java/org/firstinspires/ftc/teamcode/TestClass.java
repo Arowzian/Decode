@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.telemetry.SelectScope;
+import com.pedropathing.telemetry.SelectableOpMode;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -37,9 +39,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-@TeleOp(name="Competition TeleOp", group="Pushbot") //RT ARM UP LT DOWN
+@TeleOp(name="TestClass", group="Pushbot") //RT ARM UP LT DOWN
 //@Disabled
 public class TestClass extends OpMode {
     Build_Hardware_2025 robot = new Build_Hardware_2025();

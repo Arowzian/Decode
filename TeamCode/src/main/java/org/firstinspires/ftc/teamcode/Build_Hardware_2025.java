@@ -21,8 +21,8 @@ public class Build_Hardware_2025 {
     public DcMotor BR;
     public Servo flap;
 
-    public DcMotor rotatingArmMotor; // 2024
-    public DcMotor extendingMotor; // 2024
+    public DcMotor rotatingArmMotor;
+    public DcMotor extendingMotor;
 
     public CRServo intakeServo;
 
@@ -273,7 +273,7 @@ public class Build_Hardware_2025 {
     }
 
 
-    // sets all wheel power to inputed power
+    // sets all wheel power to inputted power
     public void setAllPower(double power) {
         FL.setPower(power);
         FR.setPower(power);
