@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -55,7 +56,7 @@ public class Build_Hardware_2025 {
 
     PIDHelper autonPIDX;
     PIDHelper autonPIDY;
-    PIDHelper armPID = new PIDHelper(0.01, 0.003, 2);
+//    PIDHelper armPID = new PIDHelper(0.01, 0.003, 2);
 
 
     //TODO These are the init methods
@@ -84,10 +85,10 @@ public class Build_Hardware_2025 {
     public void init (HardwareMap i){
         hardwareMap = i;
 
-        FL = initMotor("FL", false);    // (Port 0) = false)
-        FR = initMotor("FR", false);   // (Port 1) = true)
-        BL = initMotor("BL", false);    // (Port 2) = false)
-        BR = initMotor("BR", true); // (Port 3) = true)
+        FL = initMotor("FL", false);
+        FR = initMotor("FR", false);
+        BL = initMotor("BL", true);
+        BR = initMotor("BR", false);
         rotatingArmMotor = initMotor("rotatingArmMotor", false); // 2024
         extendingMotor = initMotor("extendingMotor", false); // 2024
 
@@ -98,11 +99,8 @@ public class Build_Hardware_2025 {
 
         slideSW = i.get(TouchSensor.class, "slideSW");
 
-        autonPIDX = new PIDHelper(0.6, 0.006, 3.5 + (getVoltage() / 40));
-        autonPIDY = new PIDHelper(0.4, 0.003, 3.6 + (getVoltage() / 40));
-
-        autonPIDX.setOutputRange(0, 0.4);
-        autonPIDY.setOutputRange(0, 0.4);
+//        autonPIDX.setOutputRange(0, 0.4);
+//        autonPIDY.setOutputRange(0, 0.4);
 
     }
 
@@ -122,6 +120,13 @@ public class Build_Hardware_2025 {
         return motor;
     }
 
+    public void setMotorDirections(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR){
+        FL.setDirection(DcMotor.Direction.FORWARD);
+        BL.setDirection(DcMotor.Direction.FORWARD);
+        FR.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.REVERSE);
+    }
+
 
     //TODO These are get and check methods that return values
 
@@ -130,16 +135,16 @@ public class Build_Hardware_2025 {
         return hardwareMap;
     }
 
-    public double getPIDValues(int pid){
-        if(pid == 0){
-            return autonPIDX.performPID(hardwareMap.get(SparkFunOTOS.class, "sensor_otos").getPosition().x);
-        } else if(pid == 1){
-            return autonPIDY.performPID(hardwareMap.get(SparkFunOTOS.class, "sensor_otos").getPosition().y);
-        } else {
-            return -1;
-        }
-
-    }
+//    public double getPIDValues(int pid){
+//        if(pid == 0){
+////            return autonPIDX.performPID(hardwareMap.get(SparkFunOTOS.class, "sensor_otos").getPosition().x);
+//        } else if(pid == 1){
+////            return autonPIDY.performPID(hardwareMap.get(SparkFunOTOS.class, "sensor_otos").getPosition().y);
+//        } else {
+//            return -1;
+//        }
+//
+//    }
 
 
     //TODO These are methods that help with turning
@@ -256,21 +261,21 @@ public class Build_Hardware_2025 {
 
 
     public void autoDrive(double targetH, double heading, double x, double y){
-        double resultX = autonPIDX.performPID(x);
-        double resultY = autonPIDY.performPID(y);
+//        double resultX = autonPIDX.performPID(x);
+//        double resultY = autonPIDY.performPID(y);
 
 //        driveMecanumFieldCentric(resultX, resultY, autoYawTrim(1.3,0.007,0.04, Math.toRadians(heading), Math.toRadians(targetH)), Math.toRadians(heading));
-        testFieldCentric(-resultX, -resultY, autoYawTrim(1.3,0.007,0.04, Math.toRadians(heading), Math.toRadians(targetH)), Math.toRadians(heading));
+//        testFieldCentric(-resultX, -resultY, autoYawTrim(1.3,0.007,0.04, Math.toRadians(heading), Math.toRadians(targetH)), Math.toRadians(heading));
 //        testFieldCentric(0, 0.5, autoYawTrim(1.3,0.007,0.04, Math.toRadians(heading), Math.toRadians(targetH)), Math.toRadians(heading));
     }
 
-    public void setPIDXTarget(double target){
-        autonPIDX.setSetpoint(target);
-    }
+//    public void setPIDXTarget(double target){
+//        autonPIDX.setSetpoint(target);
+//    }
 
-    public void setPIDYTarget(double target){
-        autonPIDY.setSetpoint(target);
-    }
+//    public void setPIDYTarget(double target){
+//        autonPIDY.setSetpoint(target);
+//    }
 
 
     // sets all wheel power to inputted power
@@ -299,7 +304,7 @@ public class Build_Hardware_2025 {
 
 
     public void driveArm(int target){
-        rotatingArmMotor.setPower(armPID.performPID(target));
+//        rotatingArmMotor.setPower(armPID.performPID(target));
     }
 
     public double getVoltage(){

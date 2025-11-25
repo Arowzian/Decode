@@ -35,6 +35,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -46,7 +47,7 @@ import java.util.logging.Logger;
 @TeleOp(name="TestClass", group="Pushbot") //RT ARM UP LT DOWN
 //@Disabled
 public class TestClass extends OpMode {
-    Build_Hardware_2025 robot = new Build_Hardware_2025();
+    Temp_Hardware robot = new Temp_Hardware();
 
     SparkFunOTOS myOtos;
 
@@ -57,41 +58,15 @@ public class TestClass extends OpMode {
 
         robot.init(hardwareMap);
         robot.initIMU();
-
-        robot.rotatingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rotatingArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        robot.extendingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.extendingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-
-        myOtos.setLinearUnit(DistanceUnit.INCH);
-        myOtos.setAngularUnit(AngleUnit.DEGREES);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0, 0, 0);
-        myOtos.setOffset(offset);
-        myOtos.setLinearScalar(1.0);
-        myOtos.setAngularScalar(1.0);
-        myOtos.calibrateImu();
-        myOtos.resetTracking();
-        SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(0, 0, 0);
-        myOtos.setPosition(currentPosition);
-
     }
 
-    double rotatingArmPower = 0;
-    int targetPosition = 300;
     @Override
     public void loop() {
 
-        int rotatingArmPosition = robot.rotatingArmMotor.getCurrentPosition();
-        int error = targetPosition - rotatingArmPosition;
-        double p = error * 0.00003;
-        rotatingArmPower = p;
-
-        robot.rotatingArmMotor.setPower(rotatingArmPower);
-
-
+        robot.FL.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x);
+        robot.FR.setPower(gamepad1.left_stick_y+ gamepad1.left_stick_x + gamepad1.right_stick_x);
+        robot.BL.setPower(gamepad1.left_stick_y+ gamepad1.left_stick_x - gamepad1.right_stick_x);
+        robot.BR.setPower(gamepad1.left_stick_y- gamepad1.left_stick_x + gamepad1.right_stick_x);
     }
 
 }
