@@ -22,8 +22,6 @@ public class Temp_Hardware {
     public DcMotor BL;
     public DcMotor BR;
 
-    public DcMotor deli2;
-
     public DcMotor deli;
 
     public CRServo rightServo;
@@ -34,6 +32,7 @@ public class Temp_Hardware {
     HardwareMap hardwareMap;
 
     BNO055IMU imu;
+
 
     public TouchSensor slideSW;
 
@@ -91,7 +90,6 @@ public class Temp_Hardware {
         FL = initMotor("FL", true);    // (Port 0) = false)
         FR = initMotor("FR", false);   // (Port 1) = true)
         BL = initMotor("BL", true);    // (Port 2) = false)
-        deli2 = initMotor("deli2", true);    // (Port 2) = false)
         BR = initMotor("BR", false); // (Port 3) = true)
         deli = initMotor("deli", false); // (Port 3) = true)
 

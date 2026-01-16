@@ -5,22 +5,42 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.helpers.PIDHelper;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@TeleOp(name="Deli Testing", group="Pushbot") //RT ARM UP LT DOWN
+import java.util.List;
+
+@TeleOp(name="TeleOp", group="Pushbot") //RT ARM UP LT DOWN
 public class TempTest extends OpMode {
 
     Temp_Hardware robot = new Temp_Hardware();
 
     private VoltageSensor voltageSensor;
 
+    boolean slowDeli = false;
     double tgt = 0;
+
+    boolean aPressed = false;
+    boolean bPressed = false;
+
+    boolean slowShoot = false;
+    boolean fastShoot = false;
+
+    private static final boolean USE_WEBCAM = true;
+    private AprilTagProcessor aprilTag;
+    private VisionPortal visionPortal;
+
+    boolean theyCalledHimBob = false;
 
     @Override
     public void init() {
+        theyCalledHimBob = true;
         robot.init(hardwareMap);
         robot.initIMU();
         tgt = 0;
@@ -28,11 +48,33 @@ public class TempTest extends OpMode {
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
+        slowDeli = false;
+        fastShoot = false;
+        slowShoot = false;
+        bPressed = false;
+        aPressed = false;
+        initAprilTag();
     }
 
     long servoTime = 0;
     double leftServoPower = 0;
 //    PIDHelper rotationPID = new PIDHelper(1,0.0005);
+
+    private void initAprilTag() {
+
+        aprilTag = new AprilTagProcessor.Builder()
+                .build();
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+
+        if (USE_WEBCAM) {
+            builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        }
+
+        builder.addProcessor(aprilTag);
+
+        visionPortal = builder.build();
+
+    }
 
 
     @Override
@@ -42,6 +84,9 @@ public class TempTest extends OpMode {
 
     @Override
     public void loop() {
+
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+
         double deliPower = 0;
 
         double currentVoltage = voltageSensor.getVoltage();
@@ -61,6 +106,19 @@ public class TempTest extends OpMode {
         // Everything to do with rotation!!!
 
 //        rotationPID.setCurrentPosition(heading);
+
+        if(gamepad1.dpad_down){
+            theyCalledHimBob = true;
+        }
+
+
+
+//        if(currentDetections.size() > 0 && currentDetections.get(0) != null){
+//            double fojaewodwjiod = currentDetections.get(0).ftcPose.x;
+//            double akwdoiaw = currentDetections.get(0).ftcPose.y;
+//            telemetry.addData("Bruh: ", Math.atan2(fojaewodwjiod, akwdoiaw));
+//            tgt = heading - Math.toRadians(currentDetections.get(0).ftcPose.yaw - 12);
+//        }
 
         double rx = gamepad1.right_stick_x;
 
@@ -90,15 +148,15 @@ public class TempTest extends OpMode {
         telemetry.addData("BL: ", backLeftPower);
         telemetry.addData("BR: ", backRightPower);
 
-        deliPower = gamepad1.left_trigger - gamepad1.right_trigger * (12.0 / currentVoltage);
         // * (12.0 / currentVoltage);
 
         if(gamepad1.right_bumper){
             servoTime = time;
-            leftServoPower= -1;
+            leftServoPower= -0.3;
         }
-        if(time - servoTime > 500){
-            leftServoPower = 0;
+
+        if(time - servoTime > 400){
+            leftServoPower = .4;
         }
 
         robot.leftServo.setPower(leftServoPower);
@@ -110,13 +168,57 @@ public class TempTest extends OpMode {
         telemetry.addData("Y coordinate (IN)", pose2D.getY(DistanceUnit.INCH));
         telemetry.addData("Heading angle (DEGREES)", pose2D.getHeading(AngleUnit.DEGREES));
 
-        if(gamepad1.a){
+        if(gamepad1.start){
             resetOrientation();
         }
-        if (gamepad1.y){
-            deliPower = 0.85;
+
+//        if(gamepad1.y && firstYPressed){
+//            firstYPressed = false;
+//        }
+//        if(gamepad1.y && !firstYPressed){
+//            firstYPressed = true;
+//        }
+//        if(!gamepad1.y && firstYPressed){
+//            firstYPressed = false;
+//        }
+
+//        if(firstYPressed){
+//            slowDeli = !slowDeli;
+//        }
+
+//        if(gamepad1.right_bumper){
+//            slowDeli = true;
+//        } else {
+//            slowDeli = false;
+//        }
+
+        if(!bPressed && gamepad1.b){
+            bPressed = true;
+            slowShoot = !slowShoot;
         }
 
+        if(!aPressed && gamepad1.a){
+            aPressed = true;
+            fastShoot = !fastShoot;
+        }
+
+        if(!gamepad1.a){
+            aPressed = false;
+        }
+
+        if(!gamepad1.b){
+            bPressed = false;
+        }
+
+        if(slowShoot){
+            deliPower = (10.5 / currentVoltage) * 0.85;
+        }
+        if(fastShoot){
+            deliPower = (10.5 / currentVoltage);
+        }
+        if (gamepad1.left_trigger>0){
+            deliPower=gamepad1.left_trigger;
+        }
         robot.deli.setPower(deliPower);
     }
 

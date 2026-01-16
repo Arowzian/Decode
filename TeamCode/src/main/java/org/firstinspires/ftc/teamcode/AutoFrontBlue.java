@@ -17,7 +17,7 @@ public class AutoFrontBlue extends OpMode {
 
     Temp_Hardware robot = new Temp_Hardware();
 
-    Pose startPose = new Pose(60, 0, Math.toRadians(0));
+    Pose startPose = new Pose(50, 0, Math.toRadians(0));
 
     Pose shootPose1 = new Pose(0, 0, Math.toRadians(0));
     Pose getOut = new Pose(24, -24, Math.toRadians(315));
@@ -44,6 +44,7 @@ public class AutoFrontBlue extends OpMode {
         robot.initIMU();
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         shootCount = 0;
+        robot.pinpoint.resetPosAndIMU();
 
 
         pathTimer = new Timer();
@@ -97,7 +98,7 @@ public class AutoFrontBlue extends OpMode {
                 }
                 break;
             case 2:
-                deliPower = -0.825 * (12.0 / currentVoltage);
+                deliPower = (10.5 / currentVoltage) * 0.85;
                 if(System.currentTimeMillis() - storedTime >= 2500){
                     servoPosition = -1;
                 }

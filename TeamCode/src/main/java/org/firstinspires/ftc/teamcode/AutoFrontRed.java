@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedropathing.Constants;
 
 @Autonomous(name="AutoFrontRed", group="Pedro") //RT ARM UP LT DOWN
@@ -17,7 +19,7 @@ public class AutoFrontRed extends OpMode {
 
     Temp_Hardware robot = new Temp_Hardware();
 
-    Pose startPose = new Pose(60, 0, Math.toRadians(0));
+    Pose startPose = new Pose(50, 0, Math.toRadians(0));
 
     Pose shootPose1 = new Pose(0, 0, Math.toRadians(0));
     Pose getOut = new Pose(24, -24, Math.toRadians(45));
@@ -44,6 +46,7 @@ public class AutoFrontRed extends OpMode {
         robot.initIMU();
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         shootCount = 0;
+        robot.pinpoint.resetPosAndIMU();
 
 
         pathTimer = new Timer();
@@ -62,6 +65,9 @@ public class AutoFrontRed extends OpMode {
     public void loop() {
         follower.update();
         currentVoltage = voltageSensor.getVoltage();
+        telemetry.addData("X: ", robot.pinpoint.getPosition().getX(DistanceUnit.INCH));
+        telemetry.addData("Y: ", robot.pinpoint.getPosition().getY(DistanceUnit.INCH));
+        telemetry.addData("ROT: ", robot.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
 
         autonomousPathUpdate();
 
@@ -97,7 +103,7 @@ public class AutoFrontRed extends OpMode {
                 }
                 break;
             case 2:
-                deliPower = -0.825 * (12.0 / currentVoltage);
+                deliPower = (10.5 / currentVoltage) * 0.85;
                 if(System.currentTimeMillis() - storedTime >= 2500){
                     servoPosition = -1;
                 }

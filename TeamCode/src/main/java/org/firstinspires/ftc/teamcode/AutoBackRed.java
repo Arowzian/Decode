@@ -97,7 +97,7 @@ public class AutoBackRed extends OpMode {
                 }
                 break;
             case 2:
-                deliPower = -0.8* (12.0 / currentVoltage);
+                deliPower = (10.5 / currentVoltage) * 0.80;
                 if(System.currentTimeMillis() - storedTime >= 2500){
                     servoPosition = -1;
                 }

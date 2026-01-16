@@ -22,7 +22,7 @@ public class Constants {
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
     public static FollowerConstants followerConstants = new FollowerConstants()
             .forwardZeroPowerAcceleration(-42.03)
             .lateralZeroPowerAcceleration(-57.789)
