@@ -1,18 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.legacy;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.pedropathing.util.Timer;
+import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.pedropathing.Constants;
 
-@Autonomous(name="AutoBackBlue", group="Pedro") //RT ARM UP LT DOWN
-public class AutoBackBlue extends OpMode {
+@Disabled
+@Autonomous(name="AutoBackRed", group="Pedro") //RT ARM UP LT DOWN
+public class AutoBackRed extends OpMode {
 
     private Follower follower;
     private Timer pathTimer, actonTimer, opmodeTimer;
@@ -21,24 +23,25 @@ public class AutoBackBlue extends OpMode {
 
     // POSES
 
-    Pose startPose = new Pose(48, 8.5, Math.toRadians(90));
+    Pose startPose = new Pose(96, 8.5, Math.toRadians(90));
 
-    Pose shootPose1 = new Pose(56, 81, Math.toRadians(135));
-
-    Pose getOut = new Pose(56, 110, Math.toRadians(90));
+    Pose shootPose1 = new Pose(88, 81, Math.toRadians(45));
+    Pose getOut = new Pose(88, 110, Math.toRadians(90));
 
     private int pathState;
 
     long storedTime;
-    int shootCount = 0;
 
     double deliPower = 0;
     double servoPosition = 0;
+
+    int shootCount = 0;
 
     private VoltageSensor voltageSensor;
 
     @Override
     public void init() {
+        shootCount = 0;
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
@@ -96,7 +99,7 @@ public class AutoBackBlue extends OpMode {
                 }
                 break;
             case 2:
-                deliPower = (10.5 / currentVoltage) * 0.8;
+                deliPower = (10.5 / currentVoltage) * 0.80;
                 if(System.currentTimeMillis() - storedTime >= 2500){
                     servoPosition = -1;
                 }

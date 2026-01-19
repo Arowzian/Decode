@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+//@Disabled
 @TeleOp(name="Motor Testing", group="Pushbot") //RT ARM UP LT DOWN
 public class MotorTesting extends OpMode {
 
-    Temp_Hardware robot = new Temp_Hardware();
+    Decode_Hardware robot = new Decode_Hardware();
 
     @Override
     public void init() {
@@ -19,10 +21,10 @@ public class MotorTesting extends OpMode {
     @Override
     public void loop() {
 
-        double flPower = 0;
-        double frPower = 0;
-        double blPower = 0;
-        double brPower = 0;
+        double flPower = 0; // bl
+        double frPower = 0; // fr
+        double blPower = 0; // fl
+        double brPower = 0; // br
 
         robot.pinpoint.update();
         telemetry.addData("Pinpoint X: ", robot.pinpoint.getPosition().getX(DistanceUnit.INCH));

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.legacy;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -6,19 +6,23 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.pedropathing.Constants;
 
-@Autonomous(name="BackLong", group="Pedro") //RT ARM UP LT DOWN
-public class BackLong extends OpMode {
+@Disabled
+@Autonomous(name="AutoFrontBlue", group="Pedro") //RT ARM UP LT DOWN
+public class AutoFrontBlue extends OpMode {
 
 
     Temp_Hardware robot = new Temp_Hardware();
 
-    Pose startPose = new Pose(0, 0, Math.toRadians(0));
-    Pose getOut = new Pose(24, 0, Math.toRadians(0));
+    Pose startPose = new Pose(50, 0, Math.toRadians(0));
+
+    Pose shootPose1 = new Pose(0, 0, Math.toRadians(0));
+    Pose getOut = new Pose(24, -24, Math.toRadians(315));
 
     int shootCount = 0;
 
@@ -80,28 +84,39 @@ public class BackLong extends OpMode {
     public void autonomousPathUpdate(){
         switch(pathState){
             case 0:
-                storedTime = System.currentTimeMillis();
+                if(!follower.isBusy()){
+                    follower.followPath(shootingPath);
+                    pathTimer.resetTimer();
+                }
+                deliPower = 0;
+                servoPosition = 0;
+
                 pathState++;
                 break;
             case 1:
-                deliPower = (11.3 / currentVoltage);
+                if(!follower.isBusy()){
+                    storedTime = System.currentTimeMillis();
+                    pathState++;
+                }
+                break;
+            case 2:
+                deliPower = (10.5 / currentVoltage) * 0.85;
                 if(System.currentTimeMillis() - storedTime >= 2500){
                     servoPosition = -1;
                 }
                 if(System.currentTimeMillis()-storedTime>=3000){
                     servoPosition = 0;
-                    pathState = 0;
+                    pathState = 1;
                     shootCount++;
                     if(shootCount > 2){
-                        pathState = 2;
+                        pathState = 3;
                         follower.followPath(getOutOfThere);
                         pathTimer.resetTimer();
                     }
                 }
                 break;
-            case 2:
-                deliPower = 0;
-                servoPosition = 0;
+            case 3:
+
                 break;
         }
     }
@@ -110,8 +125,10 @@ public class BackLong extends OpMode {
 
     Path getOutOfThere;
     public void buildPaths(){
-        getOutOfThere = new Path(new BezierLine(startPose, getOut));
-        getOutOfThere.setLinearHeadingInterpolation(startPose.getHeading(), getOut.getHeading());
+        shootingPath = new Path(new BezierLine(startPose, shootPose1));
+        shootingPath.setLinearHeadingInterpolation(startPose.getHeading(), shootPose1.getHeading());
+        getOutOfThere = new Path(new BezierLine(shootPose1, getOut));
+        getOutOfThere.setLinearHeadingInterpolation(shootPose1.getHeading(), getOut.getHeading());
     }
 
 

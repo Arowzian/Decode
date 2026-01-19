@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.legacy;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -6,57 +6,53 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.pedropathing.Constants;
 
-@Autonomous(name="AutoFrontBlue", group="Pedro") //RT ARM UP LT DOWN
-public class AutoFrontBlue extends OpMode {
+@Disabled
+@Autonomous(name="AutoBackBlue", group="Pedro") //RT ARM UP LT DOWN
+public class AutoBackBlue extends OpMode {
 
+    private Follower follower;
+    private Timer pathTimer, actonTimer, opmodeTimer;
 
     Temp_Hardware robot = new Temp_Hardware();
 
-    Pose startPose = new Pose(50, 0, Math.toRadians(0));
+    // POSES
 
-    Pose shootPose1 = new Pose(0, 0, Math.toRadians(0));
-    Pose getOut = new Pose(24, -24, Math.toRadians(315));
+    Pose startPose = new Pose(48, 8.5, Math.toRadians(90));
 
-    int shootCount = 0;
+    Pose shootPose1 = new Pose(56, 81, Math.toRadians(135));
 
+    Pose getOut = new Pose(56, 110, Math.toRadians(90));
 
     private int pathState;
 
     long storedTime;
+    int shootCount = 0;
 
     double deliPower = 0;
     double servoPosition = 0;
 
     private VoltageSensor voltageSensor;
 
-    private Follower follower;
-
-    private Timer pathTimer, actonTimer, opmodeTimer;
-
     @Override
     public void init() {
-        robot.init(hardwareMap);
-        robot.initIMU();
-        voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
-        shootCount = 0;
-        robot.pinpoint.resetPosAndIMU();
-
-
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
+
+        robot.init(hardwareMap);
+        robot.initIMU();
+        voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
     }
-
-
 
     double currentVoltage;
     @Override
@@ -70,6 +66,9 @@ public class AutoFrontBlue extends OpMode {
         robot.leftServo.setPower(servoPosition);
 
         telemetry.addData("Path State:", pathState);
+        telemetry.addData("X: ", follower.getPose().getX());
+        telemetry.addData("Y: ", follower.getPose().getY());
+        telemetry.addData("Heading: ", follower.getPose().getHeading());
         telemetry.update();
     }
 
@@ -79,6 +78,7 @@ public class AutoFrontBlue extends OpMode {
         pathState = 0;
         pathTimer.resetTimer();
     }
+
     public void autonomousPathUpdate(){
         switch(pathState){
             case 0:
@@ -98,7 +98,7 @@ public class AutoFrontBlue extends OpMode {
                 }
                 break;
             case 2:
-                deliPower = (10.5 / currentVoltage) * 0.85;
+                deliPower = (10.5 / currentVoltage) * 0.8;
                 if(System.currentTimeMillis() - storedTime >= 2500){
                     servoPosition = -1;
                 }
@@ -120,7 +120,6 @@ public class AutoFrontBlue extends OpMode {
     }
 
     Path shootingPath;
-
     Path getOutOfThere;
     public void buildPaths(){
         shootingPath = new Path(new BezierLine(startPose, shootPose1));
@@ -128,6 +127,4 @@ public class AutoFrontBlue extends OpMode {
         getOutOfThere = new Path(new BezierLine(shootPose1, getOut));
         getOutOfThere.setLinearHeadingInterpolation(shootPose1.getHeading(), getOut.getHeading());
     }
-
-
 }

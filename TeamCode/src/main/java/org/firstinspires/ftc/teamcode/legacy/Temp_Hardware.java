@@ -1,16 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.legacy;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.helpers.PIDHelper;
 
@@ -31,7 +29,7 @@ public class Temp_Hardware {
 
     HardwareMap hardwareMap;
 
-    BNO055IMU imu;
+    public BNO055IMU imu;
 
 
     public TouchSensor slideSW;
@@ -58,7 +56,7 @@ public class Temp_Hardware {
     PIDHelper autonPIDX;
     PIDHelper autonPIDY;
 
-    GoBildaPinpointDriver pinpoint;
+    public GoBildaPinpointDriver pinpoint;
 
 
     //TODO These are the init methods

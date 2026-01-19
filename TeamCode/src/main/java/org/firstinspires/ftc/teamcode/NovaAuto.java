@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedropathing;
+package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -9,7 +9,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.Temp_Hardware;
+import org.firstinspires.ftc.teamcode.legacy.Temp_Hardware;
 
 @Autonomous(name="NovaAuto", group="Yay...")
 public class NovaAuto extends OpMode {
@@ -120,6 +120,7 @@ public class NovaAuto extends OpMode {
     public void init() {
         robot.init(hardwareMap);
         robot.initIMU();
+        buildPaths();
     }
 
     @Override
