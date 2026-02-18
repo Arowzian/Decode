@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //@Disabled
@@ -29,6 +30,7 @@ public class MotorTesting extends OpMode {
         robot.pinpoint.update();
         telemetry.addData("Pinpoint X: ", robot.pinpoint.getPosition().getX(DistanceUnit.INCH));
         telemetry.addData("Pinpoint Y: ", robot.pinpoint.getPosition().getY(DistanceUnit.INCH));
+        telemetry.addData("heading",robot.pinpoint.getHeading(AngleUnit.RADIANS));
 
         if(gamepad1.a){
             flPower = 1;

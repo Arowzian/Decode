@@ -6,6 +6,9 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.helpers.PIDHelper;
 
 public class Decode_Hardware {
 
@@ -64,6 +67,16 @@ public class Decode_Hardware {
     private boolean x;
     private boolean y;
 
+    /////////////////
+    /// PID LOOPS ///
+    /////////////////
+
+    public PIDHelper piddleSticks = new PIDHelper(0.5,0);
+
+    // piddleSticks as in FiddleStick but PID (im so cool)- also the PID loop for the angular velocity of the delivery flywheels.
+
+    public Servo indexServo;
+
     //////////////////////
     /// INITIALIZATION ///
     //////////////////////
@@ -93,16 +106,17 @@ public class Decode_Hardware {
     public void init (HardwareMap i){
         hardwareMap = i;
 
-        FL = initMotor("FL", true, DcMotor.ZeroPowerBehavior.BRAKE);    // (Port 0) = false)
-        FR = initMotor("FR", false, DcMotor.ZeroPowerBehavior.BRAKE);   // (Port 1) = true)
-        BL = initMotor("BL", true, DcMotor.ZeroPowerBehavior.BRAKE);    // (Port 2) = false)
-        BR = initMotor("BR", false, DcMotor.ZeroPowerBehavior.BRAKE); // (Port 3) = true)
-        intakeMotor = initMotor("intakeMotor", false, DcMotor.ZeroPowerBehavior.FLOAT);
-        indexMotor = initMotor("indexMotor", false, DcMotor.ZeroPowerBehavior.BRAKE);
-        leftDeliveryMotor = initMotor("leftDeliveryMotor", true, DcMotor.ZeroPowerBehavior.FLOAT);
-        rightDeliveryMotor = initMotor("rightDeliveryMotor", false, DcMotor.ZeroPowerBehavior.FLOAT);
+        FL = initMotor("FL", true, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_WITHOUT_ENCODER);    // (Port 0) = false)
+        FR = initMotor("FR", false, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_WITHOUT_ENCODER);   // (Port 1) = true)
+        BL = initMotor("BL", true, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_WITHOUT_ENCODER);    // (Port 2) = false)
+        BR = initMotor("BR", false, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_WITHOUT_ENCODER); // (Port 3) = true)
+        intakeMotor = initMotor("intakeMotor", true, DcMotor.ZeroPowerBehavior.FLOAT, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        indexMotor = initMotor("indexMotor", true, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftDeliveryMotor = initMotor("leftDeliveryMotor", false, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDeliveryMotor = initMotor("rightDeliveryMotor", true, DcMotor.ZeroPowerBehavior.BRAKE, DcMotor.RunMode.RUN_USING_ENCODER);
 
         pinpoint = i.get(GoBildaPinpointDriver.class, "pinpoint");
+        indexServo = i.get(Servo.class, "indexServo");
 
         buttonsToggled = new boolean[]{false, false, false, false};
         a = false;
@@ -115,7 +129,7 @@ public class Decode_Hardware {
 
     /// MOTOR INIT
 
-    public DcMotor initMotor(String name, boolean isReverse, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+    public DcMotor initMotor(String name, boolean isReverse, DcMotor.ZeroPowerBehavior zeroPowerBehavior, DcMotor.RunMode runMode) {
         DcMotor motor = hardwareMap.get(DcMotor.class, name);
         if (isReverse) {
             motor.setDirection(DcMotor.Direction.REVERSE);
@@ -125,7 +139,7 @@ public class Decode_Hardware {
 
         motor.setPower(0.0);
         motor.setZeroPowerBehavior(zeroPowerBehavior);
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(runMode);
 
         return motor;
     }
